@@ -2,6 +2,8 @@ package com.crossover.techtrial.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +23,10 @@ import com.crossover.techtrial.service.ArticleService;
 public class ArticleController {
 
   @Autowired
-  ArticleService articleService;
+  private ArticleService articleService;
 
   @PostMapping(path = "articles")
-  public ResponseEntity<Article> createArticle(@RequestBody Article article) {
+  public ResponseEntity<Article> createArticle(@Valid @RequestBody Article article) {
     return new ResponseEntity<>(articleService.save(article), HttpStatus.CREATED);
   }
 
@@ -38,7 +40,7 @@ public class ArticleController {
 
   @PutMapping(path = "articles/{article-id}")
   public ResponseEntity<Article> updateArticle(@PathVariable("article-id") Long id,
-      @RequestBody Article article) {
+		  @Valid @RequestBody Article article) {
     return new ResponseEntity<>(articleService.save(article), HttpStatus.OK);
   }
 

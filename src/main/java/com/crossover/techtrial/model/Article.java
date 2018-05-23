@@ -16,6 +16,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Type;
+
 /**
  * @author crossover
  *
@@ -33,23 +35,24 @@ public class Article implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
-  @Email
-  @NotNull
+  @Email(message="Email should be valid")
+  @NotNull(message="Email cannot be null")
   @Column(name = "email")
-  String email;
+  private String email;
 
   @Column(name = "title")
-  String title;
+  private String title;
 
-  @Size(min = 0, max = 32768)
+  @Size(min = 0, max = 32768, message="Content size must be between 0 and 32768")
   @Column(name = "content")
-  String content;
+  private String content;
 
   @Column(name = "date")
-  LocalDateTime date;
+  private LocalDateTime date;
 
+  @Type(type="boolean")
   @Column(name = "published")
-  Boolean published;
+  private Boolean published;
 
   public Long getId() {
     return id;
