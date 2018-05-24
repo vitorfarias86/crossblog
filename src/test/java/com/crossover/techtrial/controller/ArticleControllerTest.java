@@ -1,17 +1,22 @@
 package com.crossover.techtrial.controller;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
+
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -117,6 +122,19 @@ public class ArticleControllerTest {
 		mockMvc.perform(delete("/articles/{article-id}", 1))
 				.andExpect(status().isOk());
 		verify(service, times(1)).delete(1L);
+		verifyNoMoreInteractions(service);
+	}
+	
+	@Test
+	public void testArticleSearchShouldBeCalledOnce() throws Exception {
+		when(service.search("A")).thenReturn(new ArrayList<>());
+		
+		mockMvc.perform(get("/articles/search")
+				.param("text", "A"))
+				.andExpect(status().isOk());
+		
+		
+		verify(service, times(1)).search("A");
 		verifyNoMoreInteractions(service);
 	}
 

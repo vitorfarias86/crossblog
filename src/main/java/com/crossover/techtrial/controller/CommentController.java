@@ -18,10 +18,10 @@ import com.crossover.techtrial.service.CommentService;
 @RestController
 public class CommentController {
   @Autowired
-  CommentService commentService;
+  private CommentService commentService;
 
   @Autowired
-  ArticleService articleService;
+  private ArticleService articleService;
 
   @PostMapping(path = "articles/{article-id}/comments")
   public ResponseEntity<Comment> createComment(@PathVariable(value = "article-id") Long articleId,

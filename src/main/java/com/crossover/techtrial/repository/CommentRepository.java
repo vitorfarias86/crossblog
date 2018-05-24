@@ -2,6 +2,8 @@ package com.crossover.techtrial.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
@@ -13,5 +15,5 @@ public interface CommentRepository extends PagingAndSortingRepository<Comment, L
   @Override
   List<Comment> findAll();
 
-  List<Comment> findByArticleIdOrderByDate(Long articleId);
+  Page<Comment> findByArticleIdOrderByDate(Long articleId, Pageable pageable);
 }

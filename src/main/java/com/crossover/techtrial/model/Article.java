@@ -40,6 +40,7 @@ public class Article implements Serializable {
   @Column(name = "email")
   private String email;
 
+  @Size(min=0, max = 120, message="Title size must be between 120 characters")
   @Column(name = "title")
   private String title;
 
