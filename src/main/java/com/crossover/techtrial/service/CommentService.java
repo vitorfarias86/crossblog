@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.crossover.techtrial.exceptions.ArticleNotFoundException;
 import com.crossover.techtrial.model.Comment;
 
 public interface CommentService {
@@ -18,6 +19,6 @@ public interface CommentService {
   /*
    * Save the default article.
    */
-  Comment save(Comment comment);
+  Comment save(Comment comment) throws ArticleNotFoundException;
 
 }

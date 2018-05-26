@@ -9,11 +9,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
-
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -31,6 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import com.crossover.techtrial.exceptions.ArticleNotFoundException;
 import com.crossover.techtrial.model.Article;
 import com.crossover.techtrial.service.ArticleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,12 +51,27 @@ public class ArticleControllerTest {
 
 	@Mock
 	private Article article;
-
+	
 	@Before
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 	}
+
+	@Test
+	public void testArticleShouldThrowBadRequestWhenFieldErrorsOccurs() throws Exception {
+		article = new Article();
+		article.setTitle("hello");
+		article.setEmail("user1gmailcom"); // invalid e-mail
+		article.setContent("10");
+		article.setPublished(Boolean.TRUE);
+
+		when(service.save(article)).thenReturn(article);
+
+		mockMvc.perform(post("/articles/").contentType(contentType).content(asJsonString(article)))
+				.andExpect(status().isBadRequest())
+				.andDo(print());
+		}
 
 	@Test
 	public void testArticleShouldBeCreated() throws Exception {
@@ -72,7 +86,7 @@ public class ArticleControllerTest {
 		mockMvc.perform(post("/articles/").contentType(contentType).content(asJsonString(article)))
 				.andExpect(status().isCreated());
 	}
-
+	
 	@Test
 	public void testArticleShouldBeUpdated() throws Exception {
 		article = new Article();
@@ -94,7 +108,7 @@ public class ArticleControllerTest {
 
 	@Test
 	public void testArticleFindByIdShouldReturnNotFound() throws Exception {
-		when(service.findById(1L)).thenReturn(null);
+		when(service.findById(1L)).thenThrow(ArticleNotFoundException.class);
 		mockMvc.perform(get("/articles/{article-id}", 1)).andExpect(status().isNotFound());
 		verify(service, times(1)).findById(1L);
 		verifyNoMoreInteractions(service);
@@ -126,13 +140,11 @@ public class ArticleControllerTest {
 	}
 	
 	@Test
-	public void testArticleSearchShouldBeCalledOnce() throws Exception {
+	public void testArticleSearchShouldReturnOk() throws Exception {
 		when(service.search("A")).thenReturn(new ArrayList<>());
-		
 		mockMvc.perform(get("/articles/search")
 				.param("text", "A"))
 				.andExpect(status().isOk());
-		
 		
 		verify(service, times(1)).search("A");
 		verifyNoMoreInteractions(service);

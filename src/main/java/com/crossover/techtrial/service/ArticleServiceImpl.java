@@ -7,11 +7,12 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.crossover.techtrial.exceptions.ArticleNotFoundException;
 import com.crossover.techtrial.model.Article;
 import com.crossover.techtrial.repository.ArticleRepository;
 
 @Service
-@CacheConfig(cacheNames = "search")
+@CacheConfig(cacheNames = "search" )
 public class ArticleServiceImpl implements ArticleService {
 
 	@Autowired
@@ -21,14 +22,13 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleRepository.save(article);
 	}
 
-	public Article findById(Long id) {
-		return articleRepository.findById(id).orElse(null);
+	public Article findById(Long id) throws ArticleNotFoundException {
+		return articleRepository.findById(id).orElseThrow(() -> new ArticleNotFoundException(id));
 	}
 
 	public void delete(Long id) {
 		articleRepository.deleteById(id);
 	}
-
 	@Cacheable
 	public List<Article> search(String search) {
 

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.crossover.techtrial.exceptions.ArticleNotFoundException;
 import com.crossover.techtrial.model.Comment;
 import com.crossover.techtrial.repository.CommentRepository;
 
@@ -33,8 +34,8 @@ public class CommentServiceImpl implements CommentService {
 	/*
 	 * Save the default article.
 	 */
-	public Comment save(Comment comment) {
-		comment.setArticle(service.save(comment.getArticle()));
+	public Comment save(Comment comment) throws ArticleNotFoundException {
+		comment.setArticle(service.findById(comment.getArticle().getId()));
 		return commentRepository.save(comment);
 	}
 }

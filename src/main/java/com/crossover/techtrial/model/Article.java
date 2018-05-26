@@ -26,9 +26,6 @@ import org.hibernate.annotations.Type;
 @Table(name = "article")
 public class Article implements Serializable {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = 5124000706092599751L;
 
   @Id

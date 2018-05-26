@@ -15,37 +15,35 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "comment")
 public class Comment implements Serializable {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = -481073315751589931L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Long id;
+  private Long id;
 
-  @Email
-  @NotNull
+  @Email(message="Email should be valid")
+  @NotNull(message="Email cannot be null")
   @Column(name = "email")
-  String email;
+  private String email;
 
-  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "article_id", referencedColumnName = "id")
-  Article article;
+  @JsonIgnore
+  private Article article;
 
-  @Size(max = 32768)
+  @Size(min = 0, max = 32768, message="Content size must be between 0 and 32768")
   @Column(name = "message")
-  String message;
+  private String message;
 
   @Column(name = "date")
-  LocalDateTime date;
+  private LocalDateTime date;
 
   public Long getId() {
     return id;

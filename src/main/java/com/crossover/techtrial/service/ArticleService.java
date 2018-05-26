@@ -2,6 +2,7 @@ package com.crossover.techtrial.service;
 
 import java.util.List;
 
+import com.crossover.techtrial.exceptions.ArticleNotFoundException;
 import com.crossover.techtrial.model.Article;
 
 /*
@@ -19,7 +20,7 @@ public interface ArticleService {
    * FindById will find the specific user form list.
    * 
    */
-  Article findById(Long id);
+  Article findById(Long id)  throws ArticleNotFoundException;
 
   /*
    * Delete a particular article with id
